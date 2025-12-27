@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاسبة العلامات</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #16a34a;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>حاسبة العلامات</h2>
+
+    <button onclick="showOption(1)">هنعوض في الفاينل</button>
+    <button class="secondary" onclick="showOption(2)">توقع</button>
+
+    <!-- Option 1 -->
+    <div id="option1" class="hidden">
+      <h3>هنعوض في الفاينل</h3>
+      <input type="number" id="partial" placeholder="علامة الميد (من 100)" />
+      <button onclick="calculateFinal()">احسب</button>
+      <div id="result1" class="result"></div>
+    </div>
+
+    <!-- Option 2 -->
+    <div id="option2" class="hidden">
+      <h3>توقع</h3>
+      <input type="number" id="low" placeholder="أقل علامة (40%)" />
+      <input type="number" id="high" placeholder="أعلى علامة (60%)" />
+      <button onclick="calculateExpectation()">احسب</button>
+      <div id="result2" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function showOption(option) {
+      document.getElementById('option1').classList.add('hidden');
+      document.getElementById('option2').classList.add('hidden');
+      document.getElementById('result1').innerText = '';
+      document.getElementById('result2').innerText = '';
+      document.getElementById('option' + option).classList.remove('hidden');
+    }
+
+    // Option 1: required final grade to pass (50)
+    function calculateFinal() {
+      const partial = Number(document.getElementById('partial').value);
+      const passGrade = 60;
+
+      if (partial < 0 || partial > 100) {
+        document.getElementById('result1').innerText = 'دخل علامة صحيحة';
+        return;
+      }
+
+      const neededFinal = (passGrade - (partial * 0.4)) / 0.6;
+
+      if (neededFinal > 100) {
+        document.getElementById('result1').innerText = 'للأسف، حتى الـ100 ما بتكفي';
+      } else if (neededFinal <= 0) {
+        document.getElementById('result1').innerText = 'ناجح حتى بدون فاينل 🎉';
+      } else {
+        document.getElementById('result1').innerText = `بدك ${neededFinal.toFixed(2)} بالفاينل لتنجح`;
+      }
+    }
+
+    // Option 2: expectation based on min/max
+    function calculateExpectation() {
+      const low = Number(document.getElementById('low').value);
+      const high = Number(document.getElementById('high').value);
+
+      if (low < 0 || high < 0 || low > 100 || high > 100) {
+        document.getElementById('result2').innerText = 'دخل علامات صحيحة';
+        return;
+      }
+
+      const expected = (low * 0.4) + (high * 0.6);
+      document.getElementById('result2').innerText = `توقعك النهائي: ${expected.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
